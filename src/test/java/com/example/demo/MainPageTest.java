@@ -35,29 +35,33 @@ public class MainPageTest extends BaseTest {
         Driver.get(searchTermData.url()); //Navigate to url based on the Test Data Record parameter
 
         //Test for Google Search
-        if(searchTermData.searchEngine() == "google"){
+        if("google".equals(searchTermData.searchEngine())){
             //Act - Search for a required string
             //1. Create an object of Google search page
             basePage = new GoogleSearch(Driver);
+
+            //2. Enter required search term
+            basePage.enterSearchTerm(searchTermData.searchTerm());
+
+            //3. Click on the search button
+            basePage.clickOnSearch();
         }
         //Test for Bing Search
-        else if (searchTermData.searchEngine() == "bing") {
+        else if("bing".equals(searchTermData.searchEngine())) {
             basePage = new BingSearch(Driver);
-            boolean flag = basePage.isPageLoaded();
+            boolean isPageLoaded = basePage.isPageLoaded();
+            Assert.assertTrue(isPageLoaded,"Bing Search page is not loaded.");
+
+            //2. Enter required search term
+            basePage.enterSearchTerm(searchTermData.searchTerm());
         }
-
-        //2. Enter required search term
-        basePage.enterSearchTerm(searchTermData.searchTerm());
-
-        //3. Click on the search button
-        basePage.clickOnSearch();
 
         //4. Wait for the page to load
         basePage.waitForPageLoad();
 
         //Assert - Checks if the required string results any daya
         //5. Check if the search returned any results or not
-        boolean flag = basePage.IsSearchReturnsCorrectResults(searchTermData.expectedResult());
-        Assert.assertTrue(flag,"Test results does not show the expected text -- " + searchTermData.expectedResult());
+        boolean isSearchResultsCorrect = basePage.IsSearchReturnsCorrectResults(searchTermData.expectedResult());
+        Assert.assertTrue(isSearchResultsCorrect,"Test results does not show the expected text -- " + searchTermData.expectedResult());
     }
 }
